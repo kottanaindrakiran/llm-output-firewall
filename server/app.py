@@ -1,8 +1,11 @@
 import uvicorn
-from main import app
+from fastapi import FastAPI
+from openenv.core import OpenEnvApp
+
+from main import app as fastapi_app
 
 def main():
-    uvicorn.run(app, host="0.0.0.0", port=7860)
+    uvicorn.run(fastapi_app, host="0.0.0.0", port=7860)
 
 if __name__ == "__main__":
     main()
