@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic>=2.9.0
+openai
+datasets
+huggingface-hub
+python-dotenv
+httpx
+PyYAML
