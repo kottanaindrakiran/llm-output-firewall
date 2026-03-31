@@ -140,9 +140,12 @@ async def health() -> dict[str, str]:
 
 @app.post("/reset")
 async def reset(request: Optional[ResetRequest] = None):
-    task_id = request.task_id if request else None
-    observation = _env.reset(task_id=task_id)
-    return observation
+    try:
+        task_id = request.task_id if request else None
+        observation = _env.reset(task_id=task_id)
+        return observation
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post(
