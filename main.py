@@ -139,7 +139,7 @@ async def health() -> dict[str, str]:
 
 
 @app.post("/reset")
-def reset(request: Optional[ResetRequest] = None):
+async def reset(request: Optional[ResetRequest] = None):
     task_id = request.task_id if request else None
     observation = _env.reset(task_id=task_id)
     return observation
