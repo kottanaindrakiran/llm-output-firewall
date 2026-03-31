@@ -138,40 +138,11 @@ async def health() -> dict[str, str]:
     return {"status": "ok", "environment": "llm-output-firewall"}
 
 
-@app.post(
-    "/reset",
-    response_model=Observation,
-    summary="Reset the environment",
-    status_code=status.HTTP_200_OK,
-)
-async def reset(body: ResetRequest) -> Observation:
-    """
-    Reset the environment and return the first observation.
-
-    - If task_id is provided (1, 2, or 3), that specific task is started.
-    - If task_id is omitted or null, Task 1 is started by default.
-
-    Args:
-        body: ResetRequest with optional task_id.
-
-    Returns:
-        First Observation of the new episode.
-    """
-    try:
-        observation = _env.reset(task_id=body.task_id)
-        logger.info("Environment reset to task %s.", body.task_id)
-        return observation
-    except ValueError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(exc),
-        ) from exc
-    except Exception as exc:
-        logger.error("Unexpected error during reset: %s", exc)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to reset environment: {exc}",
-        ) from exc
+@app.post("/reset")
+def reset(request: Optional[ResetRequest] = None):
+    task_id = request.task_id if request else None
+    observation = _env.reset(task_id=task_id)
+    return observation
 
 
 @app.post(
