@@ -106,8 +106,8 @@ def grade(action: Action, gold_scores: dict[str, float]) -> dict[str, Any]:
     decision_correct = action.decision == expected_decision
     bonus = DECISION_BONUS if decision_correct else 0.0
 
-    # Final score clamped to [0, 1]
-    final_score = round(min(1.0, weighted_score + bonus), 4)
+    # Final score clamped strictly to (0, 1) to satisfy validator
+    final_score = round(max(0.0001, min(0.9999, weighted_score + bonus)), 4)
 
     logger.debug(
         "Grader2: weighted=%.4f bonus=%.4f final=%.4f",

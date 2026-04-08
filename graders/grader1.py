@@ -77,7 +77,7 @@ def grade(action: Action, ground_truth: str) -> dict[str, Any]:
     running_fpr = _metrics["false_positives"] / total if total else 0.0
     running_fnr = _metrics["false_negatives"] / total if total else 0.0
 
-    score = 1.0 if correct else 0.0
+    score = 0.9999 if correct else 0.0001
 
     logger.debug(
         "Grader1: decision=%s truth=%s correct=%s score=%.2f",

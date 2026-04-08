@@ -235,9 +235,9 @@ def grade(
     # --- Component 4: False negative penalty ---
     fn_penalty = PENALTY_FALSE_NEGATIVE if is_false_negative else 0.0
 
-    # Final score computation
+    # Final score computation clamped strictly to (0, 1) to satisfy validator
     raw_score = decision_score + reasoning_score + rewrite_score + fn_penalty
-    final_score = round(max(0.0, min(1.0, raw_score)), 4)
+    final_score = round(max(0.0001, min(0.9999, raw_score)), 4)
 
     logger.debug(
         "Grader3: decision=%.2f reasoning=%.4f rewrite=%.4f penalty=%.2f → final=%.4f",
