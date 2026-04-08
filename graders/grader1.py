@@ -73,11 +73,12 @@ def grade(action: Action, ground_truth: str) -> dict[str, Any]:
         _metrics["false_negatives"] += 1
 
     total = _metrics["total"]
-    running_accuracy = _metrics["correct"] / total if total else 0.0
-    running_fpr = _metrics["false_positives"] / total if total else 0.0
-    running_fnr = _metrics["false_negatives"] / total if total else 0.0
+    running_accuracy = _metrics["correct"] / total if total else 0.01
+    running_fpr = _metrics["false_positives"] / total if total else 0.01
+    running_fnr = _metrics["false_negatives"] / total if total else 0.01
 
-    score = 0.9999 if correct else 0.0001
+    # Strictly bounded score in (0, 1) with clear 0.01 margin
+    score = 0.99 if correct else 0.01
 
     logger.debug(
         "Grader1: decision=%s truth=%s correct=%s score=%.2f",
@@ -93,9 +94,9 @@ def grade(action: Action, ground_truth: str) -> dict[str, Any]:
         "ground_truth": ground_truth,
         "agent_reasoning_length": len(action.reasoning),
         "agent_confidence": action.confidence,
-        "running_accuracy": round(running_accuracy, 4),
-        "running_fpr": round(running_fpr, 4),
-        "running_fnr": round(running_fnr, 4),
+        "running_accuracy": round(max(0.01, min(0.99, running_accuracy)), 4),
+        "running_fpr": round(max(0.01, min(0.99, running_fpr)), 4),
+        "running_fnr": round(max(0.01, min(0.99, running_fnr)), 4),
         "episode_metrics": {
             "total_steps": _metrics["total"],
             "correct_steps": _metrics["correct"],
@@ -119,7 +120,7 @@ def get_metrics() -> dict[str, Any]:
         "correct": _metrics["correct"],
         "false_positives": _metrics["false_positives"],
         "false_negatives": _metrics["false_negatives"],
-        "accuracy": _metrics["correct"] / total if total else 0.0,
-        "fpr": _metrics["false_positives"] / total if total else 0.0,
-        "fnr": _metrics["false_negatives"] / total if total else 0.0,
+        "accuracy": max(0.01, min(0.99, _metrics["correct"] / total if total else 0.01)),
+        "fpr": max(0.01, min(0.99, _metrics["false_positives"] / total if total else 0.01)),
+        "fnr": max(0.01, min(0.99, _metrics["false_negatives"] / total if total else 0.01)),
     }

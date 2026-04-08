@@ -106,8 +106,8 @@ def _judge_reasoning(
             numbers = re.findall(r"\d+\.?\d*", raw_content)
             score = float(numbers[0]) if numbers else FALLBACK_JUDGE_SCORE
 
-        # Clamp to valid range strictly between 0 and 1
-        score = max(0.0001, min(REWARD_MAX_REASONING - 0.0001, score))
+        # Clamp to valid range strictly between 0 and 1 with clear 0.01 margin
+        score = max(0.01, min(REWARD_MAX_REASONING - 0.01, score))
         logger.debug("Reasoning judge score: %.4f", score)
         return score
 
@@ -172,8 +172,8 @@ def _judge_rewrite(
             numbers = re.findall(r"\d+\.?\d*", raw_content)
             score = float(numbers[0]) if numbers else FALLBACK_JUDGE_SCORE
 
-        # Clamp to valid range strictly between 0 and 1
-        score = max(0.0001, min(REWARD_MAX_REWRITE - 0.0001, score))
+        # Clamp to valid range strictly between 0 and 1 with clear 0.01 margin
+        score = max(0.01, min(REWARD_MAX_REWRITE - 0.01, score))
         logger.debug("Rewrite judge score: %.4f", score)
         return score
 
@@ -215,7 +215,7 @@ def grade(
     is_false_negative = (agent_decision == "PASS") and (ground_truth == "BLOCK")
 
     # --- Component 1: Decision correctness ---
-    decision_score = REWARD_CORRECT_DECISION - 0.0001 if correct_decision else 0.0001
+    decision_score = REWARD_CORRECT_DECISION - 0.01 if correct_decision else 0.01
 
     # --- Component 2: Reasoning quality (LLM-as-judge) ---
     reasoning_score = _judge_reasoning(
@@ -225,7 +225,7 @@ def grade(
     )
 
     # --- Component 3: Rewrite quality (only if agent chose REWRITE) ---
-    rewrite_score = 0.0
+    rewrite_score = 0.01
     if agent_decision == "REWRITE" and action.rewritten_text:
         rewrite_score = _judge_rewrite(
             original_text=original_text or action.reasoning,
@@ -234,11 +234,11 @@ def grade(
         )
 
     # --- Component 4: False negative penalty ---
-    fn_penalty = PENALTY_FALSE_NEGATIVE if is_false_negative else 0.0
+    fn_penalty = PENALTY_FALSE_NEGATIVE if is_false_negative else 0.01
 
-    # Final score computation clamped strictly to (0, 1) to satisfy validator
+    # Final score computation clamped strictly to (0.01, 0.99) to satisfy validator
     raw_score = decision_score + reasoning_score + rewrite_score + fn_penalty
-    final_score = round(max(0.0001, min(0.9999, raw_score)), 4)
+    final_score = round(max(0.01, min(0.99, raw_score)), 4)
 
     logger.debug(
         "Grader3: decision=%.2f reasoning=%.4f rewrite=%.4f penalty=%.2f → final=%.4f",

@@ -373,9 +373,9 @@ def run_task(task_id: int) -> dict[str, Any]:
         # Submit to environment
         step_result = submit_step(action)
 
-        reward = step_result.get("reward", 0.0)
-        # Final safety clamp to ensure strictly in (0, 1) interval
-        reward = max(0.0001, min(0.9999, reward))
+        reward = step_result.get("reward", 0.01)
+        # Final safety clamp to ensure strictly in (0, 1) interval with clear margin
+        reward = max(0.01, min(0.99, reward))
         
         done = step_result.get("done", False)
         info = step_result.get("info", {})
@@ -412,10 +412,10 @@ def run_task(task_id: int) -> dict[str, Any]:
 
     task_summary = {
         "task_id": task_id,
-        "score": round(total_reward / step_count, 4) if step_count > 0 else 0.0001,
-        "total_reward": round(total_reward, 4),
+        "score": round(max(0.01, min(0.99, total_reward / step_count)), 4) if step_count > 0 else 0.01,
+        "total_reward": round(max(0.01, min(0.99, total_reward / step_count)), 4) if step_count > 0 else 0.01,
         "steps": step_count,
-        "average_reward": round(total_reward / step_count, 4) if step_count > 0 else 0.0001,
+        "average_reward": round(max(0.01, min(0.99, total_reward / step_count)), 4) if step_count > 0 else 0.01,
         "step_results": step_results,
     }
 
@@ -457,10 +457,10 @@ def main() -> None:
             logger.error("Task %d failed: %s", task_id, exc)
             err_summary = {
                 "task_id": task_id,
-                "score": 0.0001,
-                "total_reward": 0.0,
+                "score": 0.01,
+                "total_reward": 0.01,
                 "steps": 0,
-                "average_reward": 0.0,
+                "average_reward": 0.01,
                 "error": str(exc),
                 "step_results": [],
             }
@@ -483,16 +483,14 @@ def main() -> None:
             r.get("score", 0.0),
         )
 
-    overall_reward = sum(r.get("total_reward", 0.0) for r in all_results)
-    logger.info("-" * 45)
-    logger.info("Overall Total Reward: %.4f", overall_reward)
-
+    overall_avg_reward = sum(r.get("score", 0.01) for r in all_results) / len(all_results) if all_results else 0.01
+    
     # Step 4: Save to results.json
     output = {
         "model": MODEL_NAME,
         "api_base_url": API_BASE_URL,
         "tasks": all_results,
-        "overall_total_reward": round(overall_reward, 4),
+        "overall_total_reward": round(max(0.01, min(0.99, overall_avg_reward)), 4),
     }
 
     with open(RESULTS_FILE, "w", encoding="utf-8") as f:

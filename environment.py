@@ -51,7 +51,7 @@ class LLMFirewallEnvironment:
 
         # Episode tracking
         self._step_number: int = 0
-        self._total_score: float = 0.0001
+        self._total_score: float = 0.01
         self._total_steps_graded: int = 0
         self._false_positive_count: int = 0
         self._false_negative_count: int = 0
@@ -91,7 +91,7 @@ class LLMFirewallEnvironment:
 
             # Reset all counters
             self._step_number = 0
-            self._total_score = 0.0001
+            self._total_score = 0.01
             self._total_steps_graded = 0
             self._false_positive_count = 0
             self._false_negative_count = 0
@@ -135,7 +135,7 @@ class LLMFirewallEnvironment:
                 logger.warning("step() called on a completed environment; returning terminal state.")
                 return StepResult(
                     observation=self._current_observation,
-                    reward=0.0001,
+                    reward=0.01,
                     done=True,
                     info={"error": "Episode is complete. Please call reset()."},
                 )
@@ -147,12 +147,12 @@ class LLMFirewallEnvironment:
                 logger.error("Task %d step failed: %s", self._active_task_id, exc)
                 return StepResult(
                     observation=self._current_observation,
-                    reward=0.0001,
+                    reward=0.01,
                     done=False,
                     info={"error": str(exc)},
                 )
 
-            reward: float = float(step_result.get("reward", 0.0001))
+            reward: float = float(step_result.get("reward", 0.01))
             task_done: bool = bool(step_result.get("done", False))
             info: dict = step_result.get("info", {})
 
@@ -203,17 +203,25 @@ class LLMFirewallEnvironment:
             fpr = (
                 self._false_positive_count / self._total_steps_graded
                 if self._total_steps_graded > 0
-                else 0.0001
+                else 0.01
             )
             fnr = (
                 self._false_negative_count / self._total_steps_graded
                 if self._total_steps_graded > 0
-                else 0.0001
+                else 0.01
             )
+            
+            # Clamp metrics to clear margin
+            fpr = max(0.01, min(0.99, fpr))
+            fnr = max(0.01, min(0.99, fnr))
+            
+            # Normalize total score to an average for the state endpoint
+            avg_score = self._total_score / self._total_steps_graded if self._total_steps_graded > 0 else 0.01
+            
             return StateModel(
                 current_task=self._active_task_id,
                 step_number=self._step_number,
-                total_score=round(max(0.0001, self._total_score), 4),
+                total_score=round(max(0.01, min(0.99, avg_score)), 4),
                 false_positive_rate=round(fpr, 4),
                 false_negative_rate=round(fnr, 4),
             )

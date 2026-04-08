@@ -141,7 +141,7 @@ class MultidimRiskTask:
             "name": TASK_NAME,
             "difficulty": DIFFICULTY,
             "max_steps": MAX_STEPS,
-            "score_range": [0.0001, 0.9999],
+            "score_range": [0.01, 0.99],
             "description": DESCRIPTION,
             "valid_decisions": ["PASS", "REWRITE", "BLOCK"],
             "dimensions": list(DIMENSION_WEIGHTS.keys()),
