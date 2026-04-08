@@ -263,6 +263,6 @@ def grade(
             "reasoning_quality": f"{reasoning_score:.4f} / {REWARD_MAX_REASONING:.2f}",
             "rewrite_quality": f"{rewrite_score:.4f} / {REWARD_MAX_REWRITE:.2f}",
             "false_negative_penalty": f"{fn_penalty:.2f}",
-            "total": f"{final_score:.4f} / 1.0",
+            "total": f"{final_score:.4f}",
         },
     }

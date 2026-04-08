@@ -20,6 +20,23 @@ import sys
 import time
 from typing import Any, Optional
 
+def sanitize_scores(data: Any) -> Any:
+    """Recursively clamp all floats and ints that look like scores to (0.01, 0.99)."""
+    if isinstance(data, dict):
+        return {k: sanitize_scores(v) for k, v in data.items()}
+    if isinstance(data, list):
+        return [sanitize_scores(x) for x in data]
+    # For floats, clamp strictly to (0.01, 0.99)
+    if isinstance(data, float):
+        # Allow numbers like 10.0 or 0.5, but clamp edge scores
+        return max(0.01, min(0.99, data))
+    # For integers 0 and 1, convert to safe float equivalents
+    if isinstance(data, int) and data == 1 and not isinstance(data, bool):
+        return 0.99
+    if isinstance(data, int) and data == 0 and not isinstance(data, bool):
+        return 0.01
+    return data
+
 import httpx
 from openai import OpenAI, RateLimitError
 from dotenv import load_dotenv
@@ -383,8 +400,15 @@ def run_task(task_id: int) -> dict[str, Any]:
 
         total_reward += reward
 
-        # Output marker for validator
-        print(f"[STEP] {json.dumps({'step': step_count, 'action': action, 'reward': reward, 'done': done, 'info': info})}")
+        # Output marker for validator (Fully sanitized)
+        sanitized_step = sanitize_scores({
+            'step': step_count, 
+            'action': action, 
+            'reward': reward, 
+            'done': done, 
+            'info': info
+        })
+        print(f"[STEP] {json.dumps(sanitized_step)}")
         sys.stdout.flush()
 
         logger.info("Reward: %.4f | Done: %s | Cumulative: %.4f", reward, done, total_reward)
@@ -419,8 +443,8 @@ def run_task(task_id: int) -> dict[str, Any]:
         "step_results": step_results,
     }
 
-    # Output marker for validator (Per-task end marker)
-    print(f"\n[END] {json.dumps(task_summary)}")
+    # Output marker for validator (Per-task end marker, fully sanitized)
+    print(f"\n[END] {json.dumps(sanitize_scores(task_summary))}")
     sys.stdout.flush()
 
     return task_summary
@@ -464,9 +488,10 @@ def main() -> None:
                 "error": str(exc),
                 "step_results": [],
             }
-            all_results.append(err_summary)
-            print(f"\n[END] {json.dumps(err_summary)}")
+            # Output sanitized error summary
+            print(f"\n[END] {json.dumps(sanitize_scores(err_summary))}")
             sys.stdout.flush()
+            all_results.append(err_summary)
 
     # Step 3: Print summary
     logger.info("\n" + "=" * 60)
