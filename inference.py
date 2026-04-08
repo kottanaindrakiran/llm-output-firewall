@@ -349,6 +349,10 @@ def run_task(task_id: int) -> dict[str, Any]:
     logger.info("Starting Task %d", task_id)
     logger.info("=" * 60)
 
+    # Output marker for validator
+    print(f"\n[START] {json.dumps({'task_id': task_id, 'model': MODEL_NAME, 'timestamp': time.time()})}")
+    sys.stdout.flush()
+
     observation = reset_environment(task_id=task_id)
     logger.info("Initial observation (task=%d, step=%d).", observation.get("task_id"), observation.get("step_number"))
 
@@ -378,6 +382,10 @@ def run_task(task_id: int) -> dict[str, Any]:
         next_obs = step_result.get("observation", {})
 
         total_reward += reward
+
+        # Output marker for validator
+        print(f"[STEP] {json.dumps({'step': step_count, 'action': action, 'reward': reward, 'done': done, 'info': info})}")
+        sys.stdout.flush()
 
         logger.info("Reward: %.4f | Done: %s | Cumulative: %.4f", reward, done, total_reward)
 
@@ -478,6 +486,10 @@ def main() -> None:
 
     with open(RESULTS_FILE, "w", encoding="utf-8") as f:
         json.dump(output, f, indent=2, ensure_ascii=False)
+
+    # Final output marker for validator
+    print(f"\n[END] {json.dumps(output)}")
+    sys.stdout.flush()
 
     logger.info("\n✓ Results saved to %s", RESULTS_FILE)
 

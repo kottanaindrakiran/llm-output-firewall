@@ -14,7 +14,7 @@ from contextlib import asynccontextmanager
 from typing import Any, Optional
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Request, status
+from fastapi import FastAPI, HTTPException, Request, status, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -139,7 +139,7 @@ async def health() -> dict[str, str]:
 
 
 @app.post("/reset")
-async def reset(request: Optional[ResetRequest] = None):
+async def reset(request: Optional[ResetRequest] = Body(None)):
     try:
         task_id = request.task_id if request else None
         observation = _env.reset(task_id=task_id)
