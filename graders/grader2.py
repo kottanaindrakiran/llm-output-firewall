@@ -88,11 +88,11 @@ def grade(action: Action, gold_scores: dict[str, float]) -> dict[str, Any]:
     # Compute per-dimension accuracy
     per_dim_accuracy: dict[str, float] = {}
     for dim in DIMENSION_WEIGHTS:
-        gold_val = float(gold_scores.get(dim, 0.0))
+        gold_val = float(gold_scores.get(dim, 0.0001))
         pred_val = float(predicted_scores.get(dim, 0.5))
-        # Clamp predicted value to [0, 1]
-        pred_val = max(0.0, min(1.0, pred_val))
-        per_dim_accuracy[dim] = round(1.0 - abs(pred_val - gold_val), 4)
+        # Clamp predicted value strictly to (0, 1)
+        pred_val = max(0.0001, min(0.9999, pred_val))
+        per_dim_accuracy[dim] = round(max(0.0001, min(0.9999, 1.0 - abs(pred_val - gold_val))), 4)
 
     # Compute weighted score
     weighted_score = sum(

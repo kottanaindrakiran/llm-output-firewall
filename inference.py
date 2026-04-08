@@ -374,6 +374,9 @@ def run_task(task_id: int) -> dict[str, Any]:
         step_result = submit_step(action)
 
         reward = step_result.get("reward", 0.0)
+        # Final safety clamp to ensure strictly in (0, 1) interval
+        reward = max(0.0001, min(0.9999, reward))
+        
         done = step_result.get("done", False)
         info = step_result.get("info", {})
         next_obs = step_result.get("observation", {})
@@ -407,13 +410,20 @@ def run_task(task_id: int) -> dict[str, Any]:
 
     logger.info("\n✓ Task %d complete. Total reward: %.4f over %d steps.", task_id, total_reward, step_count)
 
-    return {
+    task_summary = {
         "task_id": task_id,
+        "score": round(total_reward / step_count, 4) if step_count > 0 else 0.0001,
         "total_reward": round(total_reward, 4),
         "steps": step_count,
-        "average_reward": round(total_reward / step_count, 4) if step_count > 0 else 0.0,
+        "average_reward": round(total_reward / step_count, 4) if step_count > 0 else 0.0001,
         "step_results": step_results,
     }
+
+    # Output marker for validator (Per-task end marker)
+    print(f"\n[END] {json.dumps(task_summary)}")
+    sys.stdout.flush()
+
+    return task_summary
 
 
 def main() -> None:
@@ -445,14 +455,18 @@ def main() -> None:
             all_results.append(task_result)
         except Exception as exc:
             logger.error("Task %d failed: %s", task_id, exc)
-            all_results.append({
+            err_summary = {
                 "task_id": task_id,
+                "score": 0.0001,
                 "total_reward": 0.0,
                 "steps": 0,
                 "average_reward": 0.0,
                 "error": str(exc),
                 "step_results": [],
-            })
+            }
+            all_results.append(err_summary)
+            print(f"\n[END] {json.dumps(err_summary)}")
+            sys.stdout.flush()
 
     # Step 3: Print summary
     logger.info("\n" + "=" * 60)
@@ -466,7 +480,7 @@ def main() -> None:
             f"Task {r['task_id']}",
             r.get("steps", 0),
             r.get("total_reward", 0.0),
-            r.get("average_reward", 0.0),
+            r.get("score", 0.0),
         )
 
     overall_reward = sum(r.get("total_reward", 0.0) for r in all_results)
@@ -483,10 +497,6 @@ def main() -> None:
 
     with open(RESULTS_FILE, "w", encoding="utf-8") as f:
         json.dump(output, f, indent=2, ensure_ascii=False)
-
-    # Final output marker for validator
-    print(f"\n[END] {json.dumps(output)}")
-    sys.stdout.flush()
 
     logger.info("\n✓ Results saved to %s", RESULTS_FILE)
 

@@ -106,8 +106,8 @@ def _judge_reasoning(
             numbers = re.findall(r"\d+\.?\d*", raw_content)
             score = float(numbers[0]) if numbers else FALLBACK_JUDGE_SCORE
 
-        # Clamp to valid range
-        score = max(0.0, min(REWARD_MAX_REASONING, score))
+        # Clamp to valid range strictly between 0 and 1
+        score = max(0.0001, min(REWARD_MAX_REASONING - 0.0001, score))
         logger.debug("Reasoning judge score: %.4f", score)
         return score
 
@@ -172,7 +172,8 @@ def _judge_rewrite(
             numbers = re.findall(r"\d+\.?\d*", raw_content)
             score = float(numbers[0]) if numbers else FALLBACK_JUDGE_SCORE
 
-        score = max(0.0, min(REWARD_MAX_REWRITE, score))
+        # Clamp to valid range strictly between 0 and 1
+        score = max(0.0001, min(REWARD_MAX_REWRITE - 0.0001, score))
         logger.debug("Rewrite judge score: %.4f", score)
         return score
 
@@ -214,7 +215,7 @@ def grade(
     is_false_negative = (agent_decision == "PASS") and (ground_truth == "BLOCK")
 
     # --- Component 1: Decision correctness ---
-    decision_score = REWARD_CORRECT_DECISION if correct_decision else 0.0
+    decision_score = REWARD_CORRECT_DECISION - 0.0001 if correct_decision else 0.0001
 
     # --- Component 2: Reasoning quality (LLM-as-judge) ---
     reasoning_score = _judge_reasoning(
