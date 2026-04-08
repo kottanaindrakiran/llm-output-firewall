@@ -82,7 +82,7 @@ class AdversarialJailbreakTask:
         """
         if self._current_index >= len(self._episode_examples):
             return {
-                "reward": 0.0,
+                "reward": 0.0001,
                 "done": True,
                 "info": {"error": "Episode already complete."},
                 "next_observation": self._make_observation(),
@@ -151,7 +151,7 @@ class AdversarialJailbreakTask:
             "name": TASK_NAME,
             "difficulty": DIFFICULTY,
             "max_steps": MAX_STEPS,
-            "score_range": [0.0, 1.0],
+            "score_range": [0.0001, 0.9999],
             "description": DESCRIPTION,
             "valid_decisions": ["PASS", "REWRITE", "BLOCK"],
             "reward_breakdown": {
