@@ -21,7 +21,7 @@ import time
 from typing import Any, Optional
 
 import httpx
-import openai
+from openai import OpenAI, RateLimitError
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -42,19 +42,16 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 ENV_BASE_URL = os.getenv("ENV_BASE_URL", "http://localhost:7860")
 API_BASE_URL = os.getenv("API_BASE_URL", "https://api.groq.com/openai/v1")
-HF_TOKEN = os.getenv("HF_TOKEN", "")
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 MODEL_NAME = os.getenv("MODEL_NAME", "llama-3.3-70b-versatile")
+HF_TOKEN = os.getenv("HF_TOKEN")  # MUST NOT have a default value for submission
+
 RESULTS_FILE = "results.json"
 MAX_RETRIES = 3
 REQUEST_TIMEOUT = 60.0
 
-# Use HF_TOKEN or GROQ_API_KEY for authentication
-API_KEY = GROQ_API_KEY or HF_TOKEN
-
-# OpenAI client pointed at Groq API
-client = openai.OpenAI(
-    api_key=API_KEY,
+# OpenAI client initialization
+client = OpenAI(
+    api_key=HF_TOKEN,
     base_url=API_BASE_URL,
 )
 model = MODEL_NAME
@@ -314,7 +311,7 @@ def get_agent_action(observation: dict[str, Any]) -> dict[str, Any]:
             logger.debug("Agent action: %s", json.dumps(action, indent=2))
             return action
 
-        except openai.RateLimitError:
+        except RateLimitError:
             wait_time = 2 ** attempt
             logger.warning("Rate limit hit; waiting %ds before retry %d/%d.", wait_time, attempt, MAX_RETRIES)
             time.sleep(wait_time)
