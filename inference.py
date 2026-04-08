@@ -510,13 +510,13 @@ def main() -> None:
 
     overall_avg_reward = sum(r.get("score", 0.01) for r in all_results) / len(all_results) if all_results else 0.01
     
-    # Step 4: Save to results.json
-    output = {
+    # Step 4: Save to results.json (Fully sanitized)
+    output = sanitize_scores({
         "model": MODEL_NAME,
         "api_base_url": API_BASE_URL,
         "tasks": all_results,
         "overall_total_reward": round(max(0.01, min(0.99, overall_avg_reward)), 4),
-    }
+    })
 
     with open(RESULTS_FILE, "w", encoding="utf-8") as f:
         json.dump(output, f, indent=2, ensure_ascii=False)
