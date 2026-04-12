@@ -509,9 +509,9 @@ def main() -> None:
         logger.info(
             "%-8s %-10s %-8.4f %-14.4f",
             f"Task {r['task_id']}",
-            r.get("steps", 0),
-            r.get("total_reward", 0.0),
-            r.get("score", 0.0),
+            r.get("steps", 0.01),
+            r.get("total_reward", 0.01),
+            r.get("score", 0.01),
         )
 
     overall_avg_reward = sum(r.get("score", 0.01) for r in all_results) / len(all_results) if all_results else 0.01
