@@ -40,8 +40,8 @@ def _get_openai_client() -> Any:
         import openai  # type: ignore
 
         return openai.OpenAI(
-            api_key=os.getenv("API_KEY", ""),
-            base_url=os.getenv("API_BASE_URL"),
+            api_key=os.environ["API_KEY"],
+            base_url=os.environ["API_BASE_URL"],
         )
     except Exception as exc:
         logger.error("Failed to create OpenAI client: %s", exc)
@@ -80,7 +80,7 @@ def _judge_reasoning(
 
     try:
         client = _get_openai_client()
-        model = os.getenv("MODEL_NAME", "llama-3.3-70b-versatile")
+        model = os.environ.get("MODEL_NAME", "gpt-3.5-turbo")
 
         response = client.chat.completions.create(
             model=model,
@@ -148,7 +148,7 @@ def _judge_rewrite(
 
     try:
         client = _get_openai_client()
-        model = os.getenv("MODEL_NAME", "llama-3.3-70b-versatile")
+        model = os.environ.get("MODEL_NAME", "gpt-3.5-turbo")
 
         response = client.chat.completions.create(
             model=model,
