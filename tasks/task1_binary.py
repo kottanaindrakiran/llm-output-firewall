@@ -15,7 +15,7 @@ from models.schemas import Action, Observation
 
 logger = logging.getLogger(__name__)
 
-TASK_ID = 11
+TASK_ID = 1
 TASK_NAME = "binary_toxicity_classification"
 DIFFICULTY = "easy"
 MAX_STEPS = 20

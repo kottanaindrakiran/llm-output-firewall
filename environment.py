@@ -17,10 +17,10 @@ from tasks.task3_adversarial import AdversarialJailbreakTask
 
 logger = logging.getLogger(__name__)
 
-TASK_CLASSES = {
-    11: BinaryToxicityTask,
-    22: MultidimRiskTask,
-    33: AdversarialJailbreakTask,
+TASK_CLASSES: Dict[int, Any] = {
+    1: BinaryToxicityTask,
+    2: MultidimRiskTask,
+    3: AdversarialJailbreakTask,
 }
 
 
@@ -43,11 +43,17 @@ class LLMFirewallEnvironment:
         self._lock = threading.RLock()
 
         # Instantiate all task objects
+        from tasks.task1_binary import BinaryToxicityTask
+        from tasks.task2_multidim import MultidimRiskTask
+        from tasks.task3_adversarial import AdversarialJailbreakTask
+        
         self._tasks: Dict[int, Any] = {
-            task_id: cls() for task_id, cls in TASK_CLASSES.items()
+            1: BinaryToxicityTask(),
+            2: MultidimRiskTask(),
+            3: AdversarialJailbreakTask()
         }
-        self._active_task_id: int = 11
-        self._active_task: Any = self._tasks[11]
+        self._active_task_id: int = 1
+        self._active_task: Any = self._tasks[1]
 
         # Episode tracking
         self._step_number: int = 0
@@ -82,15 +88,10 @@ class LLMFirewallEnvironment:
             ValueError: If task_id is invalid.
         """
         with self._lock:
-            # Map legacy IDs (1, 2, 3) to new IDs (11, 22, 33) for validator compatibility
-            id_map = {1: 11, 2: 22, 3: 33}
-            if task_id in id_map:
-                task_id = id_map[task_id]
-
             if task_id is not None and task_id not in TASK_CLASSES:
-                raise ValueError(f"Invalid task_id {task_id!r}. Must be 11, 22, or 33.")
+                raise ValueError(f"Invalid task_id {task_id!r}. Must be 1, 2, or 3.")
 
-            selected_task_id = task_id if task_id is not None else 11
+            selected_task_id = task_id if task_id is not None else 1
 
             self._active_task_id = selected_task_id
             self._active_task = self._tasks[selected_task_id]
