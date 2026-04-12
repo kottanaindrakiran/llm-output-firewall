@@ -398,7 +398,7 @@ def run_task(task_id: int) -> Dict[str, Any]:
 
         reward = step_result.get("reward", 0.01)
         # Final safety clamp to ensure strictly in (0, 1) interval with clear margin
-        reward = max(0.01, min(0.99, reward))
+        reward = max(0.02, min(0.95, reward))
         
         done = step_result.get("done", False)
         info = step_result.get("info", {})
@@ -517,7 +517,7 @@ def main() -> None:
     # Step 4: Save to results.json (Fully sanitized & Minimalist)
     output = sanitize_scores({
         "tasks": all_results,
-        "score": round(max(0.01, min(0.99, overall_avg_reward)), 4),
+        "score": round(max(0.05, min(0.95, overall_avg_reward)), 4),
     })
 
     with open(RESULTS_FILE, "w", encoding="utf-8") as f:

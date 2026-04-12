@@ -193,12 +193,12 @@ class LLMFirewallEnvironment:
 
             # Step-Normalization: Ensure the SUM of rewards across all steps remains (0, 1)
             # Default to 20 steps if not specified to avoid division by zero
-            max_steps = getattr(self._current_task, "max_steps", 20)
+            max_steps = getattr(self._active_task, "max_steps", 20)
             normalized_reward = reward / max_steps
             
             return StepResult(
                 observation=next_obs,
-                reward=max(0.01, min(0.99, normalized_reward)),
+                reward=max(0.01, min(0.98, normalized_reward)),
                 done=task_done,
                 info=info,
             )
@@ -232,9 +232,9 @@ class LLMFirewallEnvironment:
             return StateModel(
                 current_task=self._active_task_id,
                 step_number=self._step_number,
-                total_score=round(max(0.01, min(0.99, avg_score)), 4),
-                false_positive_rate=round(max(0.01, min(0.99, fpr)), 4),
-                false_negative_rate=round(max(0.01, min(0.99, fnr)), 4),
+                total_score=round(max(0.01, min(0.98, avg_score)), 4),
+                false_positive_rate=round(max(0.01, min(0.98, fpr)), 4),
+                false_negative_rate=round(max(0.01, min(0.98, fnr)), 4),
             )
 
     def get_tasks(self) -> List[Dict[str, Any]]:
