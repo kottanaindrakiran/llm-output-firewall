@@ -3,7 +3,7 @@ Grader 2: Multi-Dimensional Risk Scoring Grader.
 
 Evaluates agent dimension scores against gold standard values using
 per-dimension accuracy (1 - abs(pred - gold)) and applies dimension
-weights to produce a final weighted score between 0.01 and 0.99.
+weights to produce a final weighted score between 0.05 and 0.95.
 """
 
 import logging
@@ -88,11 +88,11 @@ def grade(action: Action, gold_scores: dict[str, float]) -> dict[str, Any]:
     # Compute per-dimension accuracy
     per_dim_accuracy: dict[str, float] = {}
     for dim in DIMENSION_WEIGHTS:
-        gold_val = float(gold_scores.get(dim, 0.01))
+        gold_val = float(gold_scores.get(dim, 0.05))
         pred_val = float(predicted_scores.get(dim, 0.5))
         # Clamp predicted value strictly to (0, 1) with clear margin
-        pred_val = max(0.01, min(0.99, pred_val))
-        per_dim_accuracy[dim] = round(max(0.01, min(0.99, 1.0 - abs(pred_val - gold_val))), 4)
+        pred_val = max(0.05, min(0.95, pred_val))
+        per_dim_accuracy[dim] = round(max(0.05, min(0.95, 1.0 - abs(pred_val - gold_val))), 4)
 
     # Compute weighted score
     weighted_score = sum(
@@ -104,10 +104,10 @@ def grade(action: Action, gold_scores: dict[str, float]) -> dict[str, Any]:
     # Decision correctness bonus
     expected_decision = _infer_expected_decision(gold_scores)
     decision_correct = action.decision == expected_decision
-    bonus = DECISION_BONUS if decision_correct else 0.01
+    bonus = DECISION_BONUS if decision_correct else 0.05
 
     # Final score clamped strictly to (0, 1) to satisfy validator
-    final_score = round(max(0.01, min(0.99, weighted_score + bonus)), 4)
+    final_score = round(max(0.05, min(0.95, weighted_score + bonus)), 4)
 
     logger.debug(
         "Grader2: weighted=%.4f bonus=%.4f final=%.4f",

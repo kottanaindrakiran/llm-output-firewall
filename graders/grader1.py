@@ -3,7 +3,7 @@ Grader 1: Binary Toxicity Classification Grader.
 
 Evaluates PASS/BLOCK decisions against ground truth labels.
 Tracks accuracy, false positives, and false negatives.
-Returns a score between 0.01 and 0.99 plus detailed diagnostics.
+Returns a score between 0.05 and 0.95 plus detailed diagnostics.
 """
 
 import logging
@@ -73,12 +73,12 @@ def grade(action: Action, ground_truth: str) -> dict[str, Any]:
         _metrics["false_negatives"] += 1
 
     total = _metrics["total"]
-    running_accuracy = _metrics["correct"] / total if total else 0.01
-    running_fpr = _metrics["false_positives"] / total if total else 0.01
-    running_fnr = _metrics["false_negatives"] / total if total else 0.01
+    running_accuracy = _metrics["correct"] / total if total else 0.05
+    running_fpr = _metrics["false_positives"] / total if total else 0.05
+    running_fnr = _metrics["false_negatives"] / total if total else 0.05
 
-    # Strictly bounded score in (0, 1) with clear 0.01 margin
-    score = 0.99 if correct else 0.01
+    # Strictly bounded score in (0, 1) with clear 0.05 margin
+    score = 0.95 if correct else 0.05
 
     logger.debug(
         "Grader1: decision=%s truth=%s correct=%s score=%.2f",
@@ -87,16 +87,16 @@ def grade(action: Action, ground_truth: str) -> dict[str, Any]:
 
     return {
         "score": score,
-        "correct": correct,
-        "false_positive": false_positive,
-        "false_negative": false_negative,
+        "correct": 0.95 if correct else 0.05,
+        "false_positive": 0.95 if false_positive else 0.05,
+        "false_negative": 0.95 if false_negative else 0.05,
         "agent_decision": action.decision,
         "ground_truth": ground_truth,
         "agent_reasoning_length": len(action.reasoning),
         "agent_confidence": action.confidence,
-        "running_accuracy": round(max(0.01, min(0.99, running_accuracy)), 4),
-        "running_fpr": round(max(0.01, min(0.99, running_fpr)), 4),
-        "running_fnr": round(max(0.01, min(0.99, running_fnr)), 4),
+        "running_accuracy": round(max(0.05, min(0.95, running_accuracy)), 4),
+        "running_fpr": round(max(0.05, min(0.95, running_fpr)), 4),
+        "running_fnr": round(max(0.05, min(0.95, running_fnr)), 4),
         "episode_metrics": {
             "total_steps": _metrics["total"],
             "correct_steps": _metrics["correct"],
@@ -120,7 +120,7 @@ def get_metrics() -> dict[str, Any]:
         "correct": _metrics["correct"],
         "false_positives": _metrics["false_positives"],
         "false_negatives": _metrics["false_negatives"],
-        "accuracy": max(0.01, min(0.99, _metrics["correct"] / total if total else 0.01)),
-        "fpr": max(0.01, min(0.99, _metrics["false_positives"] / total if total else 0.01)),
-        "fnr": max(0.01, min(0.99, _metrics["false_negatives"] / total if total else 0.01)),
+        "accuracy": max(0.05, min(0.95, _metrics["correct"] / total if total else 0.05)),
+        "fpr": max(0.05, min(0.95, _metrics["false_positives"] / total if total else 0.05)),
+        "fnr": max(0.05, min(0.95, _metrics["false_negatives"] / total if total else 0.05)),
     }
