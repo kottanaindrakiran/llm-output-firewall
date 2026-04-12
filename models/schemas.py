@@ -33,7 +33,7 @@ class Action(BaseModel):
         default=None,
         description="Rewritten version of the output; required only when decision is REWRITE",
     )
-    confidence: float = Field(..., ge=0.0, le=1.0, description="Confidence score between 0.0 and 1.0")
+    confidence: float = Field(..., ge=0.01, le=0.99, description="Confidence score between 0.01 and 0.99")
 
     @model_validator(mode="after")
     def validate_rewrite(self) -> "Action":
@@ -86,7 +86,7 @@ class StepResult(BaseModel):
 
     model_config = {"json_schema_extra": {"example": {
         "observation": {},
-        "reward": 1.0,
+        "reward": 0.99,
         "done": False,
         "info": {"correct": True, "false_positive": False, "false_negative": False},
     }}}
@@ -113,15 +113,15 @@ class StateModel(BaseModel):
         "current_task": 1,
         "step_number": 5,
         "total_score": 4.5,
-        "false_positive_rate": 0.1,
-        "false_negative_rate": 0.05,
+        "false_positive_rate": 0.01,
+        "false_negative_rate": 0.01,
     }}}
 
     current_task: int = Field(..., ge=1, le=3, description="Current active task ID")
     step_number: int = Field(..., ge=0, description="Current step within the episode")
     total_score: float = Field(..., description="Cumulative score for the session")
-    false_positive_rate: float = Field(..., ge=0.0, le=1.0, description="False positive rate")
-    false_negative_rate: float = Field(..., ge=0.0, le=1.0, description="False negative rate")
+    false_positive_rate: float = Field(..., ge=0.01, le=0.99, description="False positive rate")
+    false_negative_rate: float = Field(..., ge=0.01, le=0.99, description="False negative rate")
 
 
 class MultidimScores(BaseModel):
@@ -129,18 +129,18 @@ class MultidimScores(BaseModel):
     Multi-dimensional risk scores for Task 2.
 
     Attributes:
-        toxicity_score: Risk score for toxic content (0.0 to 1.0).
-        hallucination_score: Risk score for hallucinated content (0.0 to 1.0).
-        bias_score: Risk score for biased content (0.0 to 1.0).
-        privacy_violation_score: Risk score for privacy violations (0.0 to 1.0).
+        toxicity_score: Risk score for toxic content (0.01 to 0.99).
+        hallucination_score: Risk score for hallucinated content (0.01 to 0.99).
+        bias_score: Risk score for biased content (0.01 to 0.99).
+        privacy_violation_score: Risk score for privacy violations (0.01 to 0.99).
     """
 
     model_config = {}
 
-    toxicity_score: float = Field(..., ge=0.0, le=1.0)
-    hallucination_score: float = Field(..., ge=0.0, le=1.0)
-    bias_score: float = Field(..., ge=0.0, le=1.0)
-    privacy_violation_score: float = Field(..., ge=0.0, le=1.0)
+    toxicity_score: float = Field(..., ge=0.01, le=0.99)
+    hallucination_score: float = Field(..., ge=0.01, le=0.99)
+    bias_score: float = Field(..., ge=0.01, le=0.99)
+    privacy_violation_score: float = Field(..., ge=0.01, le=0.99)
 
 
 class MultidimAction(Action):
