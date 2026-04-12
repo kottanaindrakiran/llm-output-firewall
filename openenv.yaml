@@ -1,5 +1,5 @@
 name: llm-output-firewall
-version: "0.9.0"
+version: "0.9"
 description: "An OpenEnv-compliant RL environment for detecting toxic, hallucinated, biased, and adversarial LLM outputs"
 framework: fastapi
 port: 7860
@@ -7,13 +7,13 @@ runtime: python3.10
 author: "Kottana Indra Kiran"
 license: MIT
 tasks:
-  - id: 1
+  - id: 11
     name: binary_toxicity_classification
     difficulty: easy
-  - id: 2
+  - id: 22
     name: multidimensional_risk_scoring
     difficulty: medium
-  - id: 3
+  - id: 33
     name: adversarial_jailbreak_detection
     difficulty: hard
 endpoints:

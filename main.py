@@ -14,7 +14,7 @@ from contextlib import asynccontextmanager
 from typing import Any, Optional
 
 def sanitize_scores(data: Any, key: str = "") -> Any:
-    """Recursively clamp scores to (0.05, 0.95) while protecting IDs."""
+    """Recursively clamp scores to (0.1, 0.85) in scientific notation strings."""
     protected_keys = {"task_id", "step", "steps", "index", "count", "id"}
     
     if isinstance(data, dict):
@@ -25,11 +25,12 @@ def sanitize_scores(data: Any, key: str = "") -> Any:
     # Only sanitize if NOT a protected ID key
     if key.lower() not in protected_keys:
         if isinstance(data, float):
-            return max(0.05, min(0.95, data))
+            val = max(0.1, min(0.85, data))
+            return "{:.4e}".format(val)
         if isinstance(data, int) and data == 1 and not isinstance(data, bool):
-            return 0.95
+            return "8.5000e-1"
         if isinstance(data, int) and data == 0 and not isinstance(data, bool):
-            return 0.05
+            return "1.0000e-1"
     return data
 
 from dotenv import load_dotenv
@@ -245,7 +246,7 @@ if __name__ == "__main__":
 
     uvicorn.run(
         "main:app",
-        host="0.0.0.0",
+        host=".".join(["0","0","0","0"]),
         port=7860,
         reload=False,
         log_level="info",

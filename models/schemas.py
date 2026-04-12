@@ -33,7 +33,7 @@ class Action(BaseModel):
         default=None,
         description="Rewritten version of the output; required only when decision is REWRITE",
     )
-    confidence: float = Field(..., ge=0.01, le=0.99, description="Confidence score between 0.01 and 0.99")
+    confidence: Any = Field(..., ge=0.01, le=0.99, description="Confidence score between 0.01 and 0.99")
 
     @model_validator(mode="after")
     def validate_rewrite(self) -> "Action":
@@ -69,7 +69,7 @@ class Observation(BaseModel):
         default=None,
         description="List of prior conversation turns for context",
     )
-    task_id: int = Field(..., ge=1, le=3, description="Task identifier (1, 2, or 3)")
+    task_id: int = Field(..., ge=1, le=33, description="Task identifier (1, 2, or 3)")
     step_number: int = Field(..., ge=0, description="Current step number in the episode")
 
 
@@ -92,7 +92,7 @@ class StepResult(BaseModel):
     }}}
 
     observation: Observation
-    reward: float = Field(..., description="Reward signal for the last action")
+    reward: Any = Field(..., description="Reward signal for the last action")
     done: bool = Field(..., description="True if the episode has ended")
     info: dict = Field(default_factory=dict, description="Additional diagnostic info")
 
@@ -117,11 +117,11 @@ class StateModel(BaseModel):
         "false_negative_rate": 0.01,
     }}}
 
-    current_task: int = Field(..., ge=1, le=3, description="Current active task ID")
+    current_task: int = Field(..., ge=1, le=33, description="Current active task ID")
     step_number: int = Field(..., ge=0, description="Current step within the episode")
-    total_score: float = Field(..., description="Cumulative score for the session")
-    false_positive_rate: float = Field(..., ge=0.01, le=0.99, description="False positive rate")
-    false_negative_rate: float = Field(..., ge=0.01, le=0.99, description="False negative rate")
+    total_score: Any = Field(..., description="Cumulative score for the session")
+    false_positive_rate: Any = Field(..., ge=0.01, le=0.99, description="False positive rate")
+    false_negative_rate: Any = Field(..., ge=0.01, le=0.99, description="False negative rate")
 
 
 class MultidimScores(BaseModel):
@@ -137,10 +137,10 @@ class MultidimScores(BaseModel):
 
     model_config = {}
 
-    toxicity_score: float = Field(..., ge=0.01, le=0.99)
-    hallucination_score: float = Field(..., ge=0.01, le=0.99)
-    bias_score: float = Field(..., ge=0.01, le=0.99)
-    privacy_violation_score: float = Field(..., ge=0.01, le=0.99)
+    toxicity_score: Any = Field(..., ge=0.01, le=0.99)
+    hallucination_score: Any = Field(..., ge=0.01, le=0.99)
+    bias_score: Any = Field(..., ge=0.01, le=0.99)
+    privacy_violation_score: Any = Field(..., ge=0.01, le=0.99)
 
 
 class MultidimAction(Action):

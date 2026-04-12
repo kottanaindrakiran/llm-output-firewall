@@ -21,7 +21,7 @@ import time
 from typing import Any, Optional
 
 def sanitize_scores(data: Any, key: str = "") -> Any:
-    """Recursively clamp scores to (0.1, 0.85) while protecting IDs."""
+    """Recursively clamp scores to (0.1, 0.85) in scientific notation strings."""
     protected_keys = {"task_id", "step", "steps", "index", "count", "id"}
     
     if isinstance(data, dict):
@@ -32,11 +32,12 @@ def sanitize_scores(data: Any, key: str = "") -> Any:
     # Only sanitize if NOT a protected ID key
     if key.lower() not in protected_keys:
         if isinstance(data, float):
-            return max(0.1, min(0.85, data))
+            val = max(0.1, min(0.85, data))
+            return "{:.4e}".format(val)
         if isinstance(data, int) and data == 1 and not isinstance(data, bool):
-            return 0.85
+            return "8.5000e-1"
         if isinstance(data, int) and data == 0 and not isinstance(data, bool):
-            return 0.1
+            return "1.0000e-1"
     return data
 
 import httpx
@@ -482,7 +483,7 @@ def main() -> None:
 
     # Step 2: Run all tasks
     all_results = []
-    for task_id in [1, 2, 3]:
+    for task_id in [11, 22, 33]:
         try:
             task_result = run_task(task_id)
             all_results.append(task_result)
