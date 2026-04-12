@@ -61,9 +61,9 @@ logger = logging.getLogger(__name__)
 # Configuration
 # ---------------------------------------------------------------------------
 ENV_BASE_URL = os.getenv("ENV_BASE_URL", "http://localhost:7860")
-API_BASE_URL = os.environ["API_BASE_URL"]
-MODEL_NAME = os.environ.get("MODEL_NAME", "gpt-3.5-turbo")
-API_KEY = os.environ["API_KEY"]  # Must be injected by the validator
+API_BASE_URL = os.getenv("API_BASE_URL")
+MODEL_NAME = os.getenv("MODEL_NAME", "gpt-3.5-turbo")
+API_KEY = os.getenv("API_KEY") 
 
 RESULTS_FILE = "results.json"
 MAX_RETRIES = 3
