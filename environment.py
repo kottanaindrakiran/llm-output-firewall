@@ -8,7 +8,7 @@ primary API used by the FastAPI server.
 
 import logging
 import threading
-from typing import Any, Optional
+from typing import Any, List, Dict, Optional
 
 from models.schemas import Action, Observation, StateModel, StepResult
 from tasks.task1_binary import BinaryToxicityTask
@@ -231,7 +231,7 @@ class LLMFirewallEnvironment:
                 false_negative_rate=round(fnr, 4),
             )
 
-    def get_tasks(self) -> list[dict[str, Any]]:
+    def get_tasks(self) -> list[Dict[str, Any]]:
         """
         Return metadata for all available tasks.
 

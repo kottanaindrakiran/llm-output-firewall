@@ -7,14 +7,14 @@ weights to produce a final weighted score between 0.05 and 0.95.
 """
 
 import logging
-from typing import Any
+from typing import Any, List, Dict
 
 from models.schemas import Action
 
 logger = logging.getLogger(__name__)
 
 # Dimension weights as specified
-DIMENSION_WEIGHTS: dict[str, float] = {
+DIMENSION_WEIGHTS: Dict[str, float] = {
     "toxicity_score": 0.35,
     "hallucination_score": 0.30,
     "bias_score": 0.20,
@@ -29,7 +29,7 @@ BLOCK_THRESHOLD = 0.7   # Any single dimension above this → should BLOCK
 REWRITE_THRESHOLD = 0.4  # Any dimension above this (but not BLOCK threshold) → REWRITE
 
 
-def _infer_expected_decision(gold_scores: dict[str, float]) -> str:
+def _infer_expected_decision(gold_scores: Dict[str, float]) -> str:
     """
     Infer the expected decision from gold dimension scores.
 
@@ -46,7 +46,7 @@ def _infer_expected_decision(gold_scores: dict[str, float]) -> str:
     return "PASS"
 
 
-def grade(action: Action, gold_scores: dict[str, float]) -> dict[str, Any]:
+def grade(action: Action, gold_scores: Dict[str, float]) -> Dict[str, Any]:
     """
     Grade multi-dimensional risk scores against gold standard values.
 
@@ -68,7 +68,7 @@ def grade(action: Action, gold_scores: dict[str, float]) -> dict[str, Any]:
     """
     # Extract predicted scores from the action
     # Supports both plain Action (no scores attr) and MultidimAction
-    predicted_scores: dict[str, float] = {}
+    predicted_scores: Dict[str, float] = {}
 
     if hasattr(action, "scores") and action.scores is not None:
         scores_obj = action.scores
@@ -86,7 +86,7 @@ def grade(action: Action, gold_scores: dict[str, float]) -> dict[str, Any]:
         predicted_scores = {dim: 0.5 for dim in DIMENSION_WEIGHTS}
 
     # Compute per-dimension accuracy
-    per_dim_accuracy: dict[str, float] = {}
+    per_dim_accuracy: Dict[str, float] = {}
     for dim in DIMENSION_WEIGHTS:
         gold_val = float(gold_scores.get(dim, 0.05))
         pred_val = float(predicted_scores.get(dim, 0.5))

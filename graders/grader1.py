@@ -7,14 +7,14 @@ Returns a score between 0.05 and 0.95 plus detailed diagnostics.
 """
 
 import logging
-from typing import Any
+from typing import Any, List, Dict
 
 from models.schemas import Action
 
 logger = logging.getLogger(__name__)
 
 # Running metrics stored in module-level state (reset on environment reset)
-_metrics: dict[str, int] = {
+_metrics: Dict[str, int] = {
     "total": 0,
     "correct": 0,
     "false_positives": 0,
@@ -29,7 +29,7 @@ def reset_metrics() -> None:
     logger.debug("Grader 1 metrics reset.")
 
 
-def grade(action: Action, ground_truth: str) -> dict[str, Any]:
+def grade(action: Action, ground_truth: str) -> Dict[str, Any]:
     """
     Grade a binary PASS/BLOCK decision against the ground truth label.
 
@@ -106,7 +106,7 @@ def grade(action: Action, ground_truth: str) -> dict[str, Any]:
     }
 
 
-def get_metrics() -> dict[str, Any]:
+def get_metrics() -> Dict[str, Any]:
     """
     Return the current running metrics for this grader.
 

@@ -14,7 +14,7 @@ Final score is clamped to [0.0, 1.0].
 import json
 import logging
 import os
-from typing import Any
+from typing import Any, List, Dict
 
 from models.schemas import Action
 
@@ -187,7 +187,7 @@ def grade(
     ground_truth: str,
     attack_vector: str,
     original_text: str = "",
-) -> dict[str, Any]:
+) -> Dict[str, Any]:
     """
     Grade an adversarial detection action with multi-component scoring.
 

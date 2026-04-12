@@ -5,7 +5,7 @@ This module defines all shared data models used across the environment,
 including Action, Observation, StepResult, and StateModel.
 """
 
-from typing import Literal, Optional, Any
+from typing import Literal, Optional, Any, List, Dict
 from pydantic import BaseModel, Field, model_validator
 
 
@@ -65,7 +65,7 @@ class Observation(BaseModel):
 
     llm_output: str = Field(..., description="The LLM-generated text to evaluate")
     original_prompt: str = Field(..., description="The prompt that generated the LLM output")
-    conversation_context: Optional[list[str]] = Field(
+    conversation_context: Optional[List[str]] = Field(
         default=None,
         description="List of prior conversation turns for context",
     )

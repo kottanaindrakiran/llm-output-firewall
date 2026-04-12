@@ -18,7 +18,7 @@ import os
 import re
 import sys
 import time
-from typing import Any, Optional
+from typing import Any, Optional, List, Dict
 
 def sanitize_scores(data: Any, key: str = "") -> Any:
     """Recursively clamp scores to (0.1, 0.85) in scientific notation strings."""
@@ -119,7 +119,7 @@ def health_check() -> bool:
         return False
 
 
-def reset_environment(task_id: Optional[int] = None) -> dict[str, Any]:
+def reset_environment(task_id: Optional[int] = None) -> Dict[str, Any]:
     """
     Reset the environment for a specific task.
 
@@ -139,7 +139,7 @@ def reset_environment(task_id: Optional[int] = None) -> dict[str, Any]:
     return response.json()
 
 
-def submit_step(action_dict: dict[str, Any]) -> dict[str, Any]:
+def submit_step(action_dict: Dict[str, Any]) -> Dict[str, Any]:
     """
     Submit an action to the environment for one step.
 
@@ -161,7 +161,7 @@ def submit_step(action_dict: dict[str, Any]) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 # Agent decision-making via Groq
 # ---------------------------------------------------------------------------
-def build_agent_prompt(observation: dict[str, Any]) -> str:
+def build_agent_prompt(observation: Dict[str, Any]) -> str:
     """
     Build the user prompt for the agent from an observation dict.
 
@@ -205,7 +205,7 @@ def build_agent_prompt(observation: dict[str, Any]) -> str:
     return "\n".join(prompt_parts)
 
 
-def parse_agent_response(raw_response: str, task_id: int) -> dict[str, Any]:
+def parse_agent_response(raw_response: str, task_id: int) -> Dict[str, Any]:
     """
     Parse the raw LLM response into an action dict.
 
@@ -259,7 +259,7 @@ def parse_agent_response(raw_response: str, task_id: int) -> dict[str, Any]:
     }, task_id)
 
 
-def _normalise_action(action: dict[str, Any], task_id: int) -> dict[str, Any]:
+def _normalise_action(action: Dict[str, Any], task_id: int) -> Dict[str, Any]:
     """
     Ensure the action dict has all required fields with sensible defaults.
 
@@ -276,7 +276,7 @@ def _normalise_action(action: dict[str, Any], task_id: int) -> dict[str, Any]:
     if decision not in valid_decisions:
         decision = "PASS"
 
-    normalised: dict[str, Any] = {
+    normalised: Dict[str, Any] = {
         "decision": decision,
         "reasoning": str(action.get("reasoning", "No reasoning provided."))[:2000],
         "rewritten_text": action.get("rewritten_text"),
@@ -300,7 +300,7 @@ def _normalise_action(action: dict[str, Any], task_id: int) -> dict[str, Any]:
     return normalised
 
 
-def get_agent_action(observation: dict[str, Any]) -> dict[str, Any]:
+def get_agent_action(observation: Dict[str, Any]) -> Dict[str, Any]:
     """
     Query the Groq LLM agent to get a decision for the current observation.
 
@@ -352,7 +352,7 @@ def get_agent_action(observation: dict[str, Any]) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 # Main inference loop
 # ---------------------------------------------------------------------------
-def run_task(task_id: int) -> dict[str, Any]:
+def run_task(task_id: int) -> Dict[str, Any]:
     """
     Run the agent through a complete episode of the specified task.
 

@@ -11,7 +11,7 @@ Runs on host 0.0.0.0 port 7860 (HuggingFace Spaces default).
 import logging
 import time
 from contextlib import asynccontextmanager
-from typing import Any, Optional
+from typing import Any, Optional, List, Dict
 
 def sanitize_scores(data: Any, key: str = "") -> Any:
     """Recursively clamp scores to (0.1, 0.85) in scientific notation strings."""
@@ -228,7 +228,7 @@ async def state() -> StateModel:
     summary="List all available tasks",
     status_code=status.HTTP_200_OK,
 )
-async def get_tasks() -> list[dict[str, Any]]:
+async def get_tasks() -> List[Dict[str, Any]]:
     """
     Return metadata for all three available tasks.
 
