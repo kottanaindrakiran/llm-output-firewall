@@ -61,9 +61,9 @@ logger = logging.getLogger(__name__)
 # Configuration
 # ---------------------------------------------------------------------------
 ENV_BASE_URL = os.getenv("ENV_BASE_URL", "http://localhost:7860")
-API_BASE_URL = os.getenv("API_BASE_URL", "https://api.groq.com/openai/v1")
+API_BASE_URL = os.getenv("API_BASE_URL")
 MODEL_NAME = os.getenv("MODEL_NAME", "llama-3.3-70b-versatile")
-HF_TOKEN = os.getenv("HF_TOKEN")  # MUST NOT have a default value for submission
+API_KEY = os.getenv("API_KEY")  # Must be injected by the validator
 
 RESULTS_FILE = "results.json"
 MAX_RETRIES = 3
@@ -71,7 +71,7 @@ REQUEST_TIMEOUT = 60.0
 
 # OpenAI client initialization
 client = OpenAI(
-    api_key=HF_TOKEN,
+    api_key=API_KEY,
     base_url=API_BASE_URL,
 )
 model = MODEL_NAME

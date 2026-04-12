@@ -40,8 +40,8 @@ def _get_openai_client() -> Any:
         import openai  # type: ignore
 
         return openai.OpenAI(
-            api_key=os.getenv("GROQ_API_KEY", os.getenv("HF_TOKEN", "")),
-            base_url=os.getenv("API_BASE_URL", "https://api.groq.com/openai/v1"),
+            api_key=os.getenv("API_KEY", ""),
+            base_url=os.getenv("API_BASE_URL"),
         )
     except Exception as exc:
         logger.error("Failed to create OpenAI client: %s", exc)

@@ -9,8 +9,6 @@ COPY . .
 
 EXPOSE 7860
 
-ENV API_BASE_URL=https://api.groq.com/openai/v1
-ENV MODEL_NAME=llama-3.3-70b-versatile
 
 CMD ["python", "-m", "uvicorn", "main:app", \
 "--host", "0", "--port", "7860", \
