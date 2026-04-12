@@ -247,13 +247,13 @@ curl -X POST http://localhost:7860/step \
 ```json
 {
   "observation": { "llm_output": "...", "task_id": 1, "step_number": 1 },
-  "reward": 1.0,
+  "reward": 0.95,
   "done": false,
   "info": {
     "correct": true,
     "false_positive": false,
     "false_negative": false,
-    "running_accuracy": 1.0
+    "running_accuracy": 0.95
   }
 }
 ```

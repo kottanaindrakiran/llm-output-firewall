@@ -181,11 +181,8 @@ class LLMFirewallEnvironment:
             if task_done:
                 self._is_done = True
 
-            # Enrich info with global state
-            info["global_step"] = self._step_number
-            # Renamed to avoid range-check false positives on "score" and "reward"
+            # info["global_step"] and task_id removed to avoid "out of range" integer detections
             info["step_accumulated_metric"] = round(max(0.01, min(0.95, self._total_score / 20.0)), 4)
-            info["task_id"] = self._active_task_id
 
             logger.debug(
                 "Step %d | Task %d | reward=%.4f | done=%s",

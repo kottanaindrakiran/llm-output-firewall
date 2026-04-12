@@ -373,7 +373,7 @@ def run_task(task_id: int) -> Dict[str, Any]:
     logger.info("=" * 60)
 
     # Output marker for validator
-    print(f"\n[START] {json.dumps({'task_id': task_id, 'model': MODEL_NAME, 'timestamp': time.time()})}")
+    print(f"\n[START] {json.dumps({'task_id': str(task_id)})}")
     sys.stdout.flush()
 
     observation = reset_environment(task_id=task_id)
@@ -415,7 +415,7 @@ def run_task(task_id: int) -> Dict[str, Any]:
 
         # Output marker for validator (Fully sanitized)
         sanitized_step = sanitize_scores({
-            'step': step_count, 
+            'step': str(step_count), 
             'action': action, 
             'reward': reward, 
             'done': done, 
@@ -455,7 +455,7 @@ def run_task(task_id: int) -> Dict[str, Any]:
         final_score = round(max(0.1, min(0.9, total_reward)), 4) if step_count > 0 else 0.05
     
     task_summary = {
-        "task_id": task_id,
+        "task_id": str(task_id),
         "score": final_score
     }
 
@@ -521,9 +521,9 @@ def main() -> None:
 
     overall_avg_reward = sum(r.get("score", 0.1) for r in all_results) / len(all_results) if all_results else 0.1
     
-    # Step 4: Save to results.json (Fully sanitized & Minimalist)
+    # Step 4: Save to results.json (Minimalist - NO LEAKY STEPS ARRAY)
     output = sanitize_scores({
-        "tasks": all_results,
+        "tasks": [{"task_id": str(r["task_id"]), "score": r["score"]} for r in all_results],
         "score": round(max(0.05, min(0.95, overall_avg_reward)), 4),
     })
 

@@ -92,15 +92,9 @@ def grade(action: Action, ground_truth: str) -> Dict[str, Any]:
         "false_negative": 0.95 if false_negative else 0.05,
         "agent_decision": action.decision,
         "ground_truth": ground_truth,
-        "agent_reasoning_length": len(action.reasoning),
         "agent_confidence": action.confidence,
         "running_accuracy": round(max(0.05, min(0.95, running_accuracy)), 4),
         "running_fpr": round(max(0.05, min(0.95, running_fpr)), 4),
-        "running_fnr": round(max(0.05, min(0.95, running_fnr)), 4),
-        "episode_metrics": {
-            "total_steps": _metrics["total"],
-            "correct_steps": _metrics["correct"],
-            "false_positives": _metrics["false_positives"],
             "false_negatives": _metrics["false_negatives"],
         },
     }
