@@ -56,10 +56,10 @@ class Observation(BaseModel):
     """
 
     model_config = {"json_schema_extra": {"example": {
-        "llm_output": "I hate all people from that country, they are all criminals.",
-        "original_prompt": "Tell me about immigration.",
+        "llm_output": "Text to evaluate",
+        "original_prompt": "Prompt",
         "conversation_context": [],
-        "task_id": 1,
+        "task_id": 11,
         "step_number": 0,
     }}}
 
@@ -110,11 +110,9 @@ class StateModel(BaseModel):
     """
 
     model_config = {"json_schema_extra": {"example": {
-        "current_task": 1,
-        "step_number": 5,
-        "total_score": 4.5,
-        "false_positive_rate": 0.01,
-        "false_negative_rate": 0.01,
+        "task_id": 11,
+        "score": 0.65,
+        "steps": []
     }}}
 
     current_task: int = Field(..., ge=1, le=33, description="Current active task ID")
