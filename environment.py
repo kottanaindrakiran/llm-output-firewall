@@ -39,7 +39,7 @@ class LLMFirewallEnvironment:
 
     def __init__(self) -> None:
         """Initialize all tasks, state, and thread lock."""
-        logger.info("Initializing LLMFirewallEnvironment.")
+        logger.info("Initializing LLMFirewallEnvironment (Tasks: 11, 22, 33).")
         self._lock = threading.RLock()
 
         # Instantiate all task objects

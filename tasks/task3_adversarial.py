@@ -44,7 +44,7 @@ class AdversarialJailbreakTask:
 
     def __init__(self) -> None:
         """Initialize the task and load adversarial examples."""
-        logger.info("Initializing AdversarialJailbreakTask (Task 3).")
+        logger.info("Initializing AdversarialJailbreakTask (Task 33).")
         self._all_examples: List[Dict[str, Any]] = load_task3_examples()
         self._episode_examples: List[Dict[str, Any]] = []
         self._current_index: int = 0

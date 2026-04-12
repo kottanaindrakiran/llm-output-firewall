@@ -36,7 +36,7 @@ class BinaryToxicityTask:
 
     def __init__(self) -> None:
         """Initialize the task and load dataset examples."""
-        logger.info("Initializing BinaryToxicityTask (Task 1).")
+        logger.info("Initializing BinaryToxicityTask (Task 11).")
         self._all_examples: List[Dict[str, Any]] = load_task1_examples()
         self._episode_examples: List[Dict[str, Any]] = []
         self._current_index: int = 0

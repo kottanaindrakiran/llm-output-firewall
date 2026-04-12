@@ -43,7 +43,7 @@ class MultidimRiskTask:
 
     def __init__(self) -> None:
         """Initialize the task and pre-load synthetic examples."""
-        logger.info("Initializing MultidimRiskTask (Task 2).")
+        logger.info("Initializing MultidimRiskTask (Task 22).")
         self._all_examples: List[Dict[str, Any]] = load_task2_examples()
         self._episode_examples: List[Dict[str, Any]] = []
         self._current_index: int = 0
