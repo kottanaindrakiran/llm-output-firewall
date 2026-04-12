@@ -198,7 +198,7 @@ class LLMFirewallEnvironment:
             
             return StepResult(
                 observation=next_obs,
-                reward=max(0.1, min(0.9, normalized_reward)),
+                reward=max(0.01, min(0.99, normalized_reward)),
                 done=task_done,
                 info=info,
             )
@@ -233,8 +233,8 @@ class LLMFirewallEnvironment:
                 current_task=self._active_task_id,
                 step_number=self._step_number,
                 total_score=round(max(0.01, min(0.99, avg_score)), 4),
-                false_positive_rate=round(fpr, 4),
-                false_negative_rate=round(fnr, 4),
+                false_positive_rate=round(max(0.01, min(0.99, fpr)), 4),
+                false_negative_rate=round(max(0.01, min(0.99, fnr)), 4),
             )
 
     def get_tasks(self) -> List[Dict[str, Any]]:

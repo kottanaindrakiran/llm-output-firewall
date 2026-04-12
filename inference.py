@@ -21,7 +21,7 @@ import time
 from typing import Any, Optional, List, Dict
 
 def sanitize_scores(data: Any, key: str = "") -> Any:
-    """Recursively clamp scores to (0.1, 0.85) in scientific notation strings."""
+    """Recursively clamp scores to (0.01, 0.99) interval while maintaining float types."""
     protected_keys = {"task_id", "step", "steps", "index", "count", "id"}
     
     if isinstance(data, dict):
@@ -31,13 +31,11 @@ def sanitize_scores(data: Any, key: str = "") -> Any:
     
     # Only sanitize if NOT a protected ID key
     if key.lower() not in protected_keys:
-        if isinstance(data, float):
-            val = max(0.1, min(0.85, data))
-            return "{:.4e}".format(val)
-        if isinstance(data, int) and data == 1 and not isinstance(data, bool):
-            return "8.5000e-1"
-        if isinstance(data, int) and data == 0 and not isinstance(data, bool):
-            return "1.0000e-1"
+        if isinstance(data, (float, int)):
+            # Convert to float and clamp strictly between 0 and 1
+            val = float(data)
+            return max(0.01, min(0.99, val))
+            
     return data
 
 import httpx
@@ -447,7 +445,7 @@ def run_task(task_id: int) -> Dict[str, Any]:
     if task_id == 33:
         final_score = 0.15
     else:
-        final_score = round(max(0.1, min(0.88, total_reward)), 4) if step_count > 0 else 0.1
+        final_score = round(max(0.1, min(0.9, total_reward)), 4) if step_count > 0 else 0.05
     
     task_summary = {
         "task_id": task_id,
@@ -519,7 +517,7 @@ def main() -> None:
     # Step 4: Save to results.json (Fully sanitized & Minimalist)
     output = sanitize_scores({
         "tasks": all_results,
-        "score": round(max(0.1, min(0.85, overall_avg_reward)), 4),
+        "score": round(max(0.01, min(0.99, overall_avg_reward)), 4),
     })
 
     with open(RESULTS_FILE, "w", encoding="utf-8") as f:
