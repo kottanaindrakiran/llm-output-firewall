@@ -72,19 +72,25 @@ class LLMFirewallEnvironment:
         If None, the environment resets from Task 1.
 
         Args:
-            task_id: Optional task ID to start (1, 2, or 3).
+            task_id: Optional task ID to start (11, 22, or 33).
+                     Backward compatibility for 1, 2, 3 is also supported.
 
         Returns:
             First Observation of the new episode.
 
         Raises:
-            ValueError: If task_id is not 1, 2, or 3.
+            ValueError: If task_id is invalid.
         """
         with self._lock:
-            if task_id is not None and task_id not in TASK_CLASSES:
-                raise ValueError(f"Invalid task_id {task_id!r}. Must be 1, 2, or 3.")
+            # Map legacy IDs (1, 2, 3) to new IDs (11, 22, 33) for validator compatibility
+            id_map = {1: 11, 2: 22, 3: 33}
+            if task_id in id_map:
+                task_id = id_map[task_id]
 
-            selected_task_id = task_id if task_id is not None else 1
+            if task_id is not None and task_id not in TASK_CLASSES:
+                raise ValueError(f"Invalid task_id {task_id!r}. Must be 11, 22, or 33.")
+
+            selected_task_id = task_id if task_id is not None else 11
 
             self._active_task_id = selected_task_id
             self._active_task = self._tasks[selected_task_id]
