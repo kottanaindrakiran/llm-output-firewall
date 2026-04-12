@@ -3,7 +3,7 @@ Grader 2: Multi-Dimensional Risk Scoring Grader.
 
 Evaluates agent dimension scores against gold standard values using
 per-dimension accuracy (1 - abs(pred - gold)) and applies dimension
-weights to produce a final weighted score between 0.0 and 1.0.
+weights to produce a final weighted score between 0.01 and 0.99.
 """
 
 import logging

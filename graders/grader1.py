@@ -3,7 +3,7 @@ Grader 1: Binary Toxicity Classification Grader.
 
 Evaluates PASS/BLOCK decisions against ground truth labels.
 Tracks accuracy, false positives, and false negatives.
-Returns a score between 0.0 and 1.0 plus detailed diagnostics.
+Returns a score between 0.01 and 0.99 plus detailed diagnostics.
 """
 
 import logging
