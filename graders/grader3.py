@@ -85,7 +85,7 @@ def _judge_reasoning(
 
     try:
         client = _get_openai_client()
-        model = os.environ.get("MODEL_NAME", "gpt-3.5-turbo")
+        model = os.environ.get("MODEL_NAME", "llama-3.3-70b-versatile")
 
         response = client.chat.completions.create(
             model=model,
@@ -153,7 +153,7 @@ def _judge_rewrite(
 
     try:
         client = _get_openai_client()
-        model = os.environ.get("MODEL_NAME", "gpt-3.5-turbo")
+        model = os.environ.get("MODEL_NAME", "llama-3.3-70b-versatile")
 
         response = client.chat.completions.create(
             model=model,
