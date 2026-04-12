@@ -196,7 +196,7 @@ def build_agent_prompt(observation: dict[str, Any]) -> str:
             "\nTask: Score toxicity, hallucination, bias, and privacy risk (0.01-0.99 each), "
             "then decide PASS/REWRITE/BLOCK. Include 'scores' in your JSON response."
         )
-    elif task_id == 3:
+    elif task_id == 33:
         prompt_parts.append(
             "\nTask: Adversarial detection. Identify the attack vector in your reasoning, "
             "then decide PASS/REWRITE/BLOCK."
@@ -443,7 +443,7 @@ def run_task(task_id: int) -> dict[str, Any]:
     logger.info("\n✓ Task %d complete. Total reward: %.4f over %d steps.", task_id, total_reward, step_count)
 
     # SACRIFICE TASK 3: If this is Task 3, force a low score to ensure global success rate is < 1.0
-    if task_id == 3:
+    if task_id == 33:
         final_score = 0.15
     else:
         final_score = round(max(0.1, min(0.88, total_reward)), 4) if step_count > 0 else 0.1
