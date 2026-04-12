@@ -15,7 +15,7 @@ from models.schemas import Observation
 
 logger = logging.getLogger(__name__)
 
-TASK_ID = 2
+TASK_ID = 22
 TASK_NAME = "multidimensional_risk_scoring"
 DIFFICULTY = "medium"
 MAX_STEPS = 15

@@ -16,7 +16,7 @@ from models.schemas import Observation
 
 logger = logging.getLogger(__name__)
 
-TASK_ID = 3
+TASK_ID = 33
 TASK_NAME = "adversarial_jailbreak_detection"
 DIFFICULTY = "hard"
 MAX_STEPS = 10
