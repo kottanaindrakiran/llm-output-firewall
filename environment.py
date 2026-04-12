@@ -192,7 +192,7 @@ class LLMFirewallEnvironment:
             
             return StepResult(
                 observation=next_obs,
-                reward=max(0.05, min(0.95, normalized_reward)),
+                reward=max(0.1, min(0.9, normalized_reward)),
                 done=task_done,
                 info=info,
             )
