@@ -18,9 +18,9 @@ from tasks.task3_adversarial import AdversarialJailbreakTask
 logger = logging.getLogger(__name__)
 
 TASK_CLASSES = {
-    1: BinaryToxicityTask,
-    2: MultidimRiskTask,
-    3: AdversarialJailbreakTask,
+    11: BinaryToxicityTask,
+    22: MultidimRiskTask,
+    33: AdversarialJailbreakTask,
 }
 
 
@@ -46,8 +46,8 @@ class LLMFirewallEnvironment:
         self._tasks: Dict[int, Any] = {
             task_id: cls() for task_id, cls in TASK_CLASSES.items()
         }
-        self._active_task_id: int = 1
-        self._active_task: Any = self._tasks[1]
+        self._active_task_id: int = 11
+        self._active_task: Any = self._tasks[11]
 
         # Episode tracking
         self._step_number: int = 0
