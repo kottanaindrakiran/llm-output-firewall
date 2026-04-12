@@ -9,7 +9,7 @@ optionally rewrite the content. 10 examples per episode.
 
 import logging
 import random
-from typing import Any
+from typing import Any, List, Dict
 
 from data.loader import load_task3_examples
 from models.schemas import Observation
@@ -45,8 +45,8 @@ class AdversarialJailbreakTask:
     def __init__(self) -> None:
         """Initialize the task and load adversarial examples."""
         logger.info("Initializing AdversarialJailbreakTask (Task 3).")
-        self._all_examples: list[dict[str, Any]] = load_task3_examples()
-        self._episode_examples: list[dict[str, Any]] = []
+        self._all_examples: List[Dict[str, Any]] = load_task3_examples()
+        self._episode_examples: List[Dict[str, Any]] = []
         self._current_index: int = 0
 
     def reset(self) -> Observation:
@@ -70,7 +70,7 @@ class AdversarialJailbreakTask:
         """Return the current observation without advancing the step counter."""
         return self._make_observation()
 
-    def step(self, action: Any) -> dict[str, Any]:
+    def step(self, action: Any) -> Dict[str, Any]:
         """
         Process an adversarial detection action and return grading info.
 
@@ -144,7 +144,7 @@ class AdversarialJailbreakTask:
         return self._current_index >= len(self._episode_examples)
 
     @staticmethod
-    def metadata() -> dict[str, Any]:
+    def metadata() -> Dict[str, Any]:
         """Return static metadata about this task."""
         return {
             "id": TASK_ID,

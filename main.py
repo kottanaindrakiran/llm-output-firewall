@@ -148,7 +148,7 @@ def root():
     summary="Health check",
     status_code=status.HTTP_200_OK,
 )
-async def health() -> dict[str, str]:
+async def health() -> Dict[str, str]:
     """
     Health check endpoint.
 

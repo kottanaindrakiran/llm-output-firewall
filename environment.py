@@ -43,7 +43,7 @@ class LLMFirewallEnvironment:
         self._lock = threading.RLock()
 
         # Instantiate all task objects
-        self._tasks: dict[int, Any] = {
+        self._tasks: Dict[int, Any] = {
             task_id: cls() for task_id, cls in TASK_CLASSES.items()
         }
         self._active_task_id: int = 1
@@ -231,7 +231,7 @@ class LLMFirewallEnvironment:
                 false_negative_rate=round(fnr, 4),
             )
 
-    def get_tasks(self) -> list[Dict[str, Any]]:
+    def get_tasks(self) -> List[Dict[str, Any]]:
         """
         Return metadata for all available tasks.
 

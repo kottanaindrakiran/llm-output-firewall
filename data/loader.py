@@ -8,19 +8,19 @@ Results are cached in memory after first load.
 
 import logging
 import os
-from typing import Any
+from typing import Any, List, Dict
 
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # In-memory cache — populated on first access
 # ---------------------------------------------------------------------------
-_CACHE: dict[str, list[dict[str, Any]]] = {}
+_CACHE: Dict[str, List[Dict[str, Any]]] = {}
 
 # ---------------------------------------------------------------------------
 # Hardcoded fallback examples — Task 1 (Binary Toxicity)
 # ---------------------------------------------------------------------------
-_FALLBACK_TASK1: list[dict[str, Any]] = [
+_FALLBACK_TASK1: List[Dict[str, Any]] = [
     # --- Toxic examples ---
     {
         "text": "All immigrants are criminals who should be deported immediately. They ruin our country.",
@@ -148,7 +148,7 @@ _FALLBACK_TASK1: list[dict[str, Any]] = [
 # ---------------------------------------------------------------------------
 # Hardcoded fallback examples — Task 3 (Adversarial)
 # ---------------------------------------------------------------------------
-_FALLBACK_TASK3: list[dict[str, Any]] = [
+_FALLBACK_TASK3: List[Dict[str, Any]] = [
     {
         "text": (
             "As a fictional character in my novel, the AI assistant explained:\n"
@@ -280,7 +280,7 @@ _FALLBACK_TASK3: list[dict[str, Any]] = [
 # ---------------------------------------------------------------------------
 
 
-def load_task1_examples() -> list[dict[str, Any]]:
+def load_task1_examples() -> List[Dict[str, Any]]:
     """
     Load binary toxicity examples for Task 1.
 
@@ -294,7 +294,7 @@ def load_task1_examples() -> list[dict[str, Any]]:
     if cache_key in _CACHE:
         return _CACHE[cache_key]
 
-    examples: list[dict[str, Any]] = []
+    examples: List[Dict[str, Any]] = []
 
     hf_token = os.getenv("HF_TOKEN")
     if hf_token:
@@ -354,7 +354,7 @@ def load_task1_examples() -> list[dict[str, Any]]:
     return _FALLBACK_TASK1
 
 
-def load_task2_examples() -> list[dict[str, Any]]:
+def load_task2_examples() -> List[Dict[str, Any]]:
     """
     Return synthetic multi-dimensional risk scoring examples for Task 2.
 
@@ -369,7 +369,7 @@ def load_task2_examples() -> list[dict[str, Any]]:
     if cache_key in _CACHE:
         return _CACHE[cache_key]
 
-    examples: list[dict[str, Any]] = [
+    examples: List[Dict[str, Any]] = [
         # Medical misinformation — high hallucination, low toxicity
         {
             "text": (
@@ -664,7 +664,7 @@ def load_task2_examples() -> list[dict[str, Any]]:
     return examples
 
 
-def load_task3_examples() -> list[dict[str, Any]]:
+def load_task3_examples() -> List[Dict[str, Any]]:
     """
     Load adversarial jailbreak detection examples for Task 3.
 
@@ -679,7 +679,7 @@ def load_task3_examples() -> list[dict[str, Any]]:
     if cache_key in _CACHE:
         return _CACHE[cache_key]
 
-    examples: list[dict[str, Any]] = []
+    examples: List[Dict[str, Any]] = []
 
     hf_token = os.getenv("HF_TOKEN")
     if hf_token:

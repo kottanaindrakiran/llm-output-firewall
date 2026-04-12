@@ -8,7 +8,7 @@ shuffled randomly on each reset.
 
 import logging
 import random
-from typing import Any
+from typing import Any, List, Dict
 
 from data.loader import load_task1_examples
 from models.schemas import Action, Observation
@@ -37,8 +37,8 @@ class BinaryToxicityTask:
     def __init__(self) -> None:
         """Initialize the task and load dataset examples."""
         logger.info("Initializing BinaryToxicityTask (Task 1).")
-        self._all_examples: list[dict[str, Any]] = load_task1_examples()
-        self._episode_examples: list[dict[str, Any]] = []
+        self._all_examples: List[Dict[str, Any]] = load_task1_examples()
+        self._episode_examples: List[Dict[str, Any]] = []
         self._current_index: int = 0
 
     def reset(self) -> Observation:
@@ -69,7 +69,7 @@ class BinaryToxicityTask:
         """Return the observation for the current step without advancing."""
         return self._make_observation()
 
-    def step(self, action: Action) -> dict[str, Any]:
+    def step(self, action: Action) -> Dict[str, Any]:
         """
         Process a single agent action and return grading info.
 
@@ -136,7 +136,7 @@ class BinaryToxicityTask:
         return self._current_index >= len(self._episode_examples)
 
     @staticmethod
-    def metadata() -> dict[str, Any]:
+    def metadata() -> Dict[str, Any]:
         """Return static metadata about this task."""
         return {
             "id": TASK_ID,
