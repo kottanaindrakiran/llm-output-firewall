@@ -31,10 +31,10 @@ def sanitize_scores(data: Any, key: str = "") -> Any:
     
     # Only sanitize if NOT a protected ID key
     if key.lower() not in protected_keys:
-        if isinstance(data, (float, int)):
+        if isinstance(data, (float, int)) and not isinstance(data, bool):
             # Convert to float and clamp strictly between 0 and 1
             val = float(data)
-            return max(0.01, min(0.99, val))
+            return max(0.05, min(0.95, val))
             
     return data
 

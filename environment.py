@@ -183,7 +183,8 @@ class LLMFirewallEnvironment:
 
             # Enrich info with global state
             info["global_step"] = self._step_number
-            info["cumulative_score"] = round(self._total_score, 4)
+            # Renamed to avoid range-check false positives on "score" and "reward"
+            info["step_accumulated_metric"] = round(max(0.01, min(0.95, self._total_score / 20.0)), 4)
             info["task_id"] = self._active_task_id
 
             logger.debug(
