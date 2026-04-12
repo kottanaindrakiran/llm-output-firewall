@@ -442,8 +442,8 @@ def run_task(task_id: int) -> dict[str, Any]:
 
     task_summary = {
         "task_id": task_id,
-        "score": round(max(0.01, min(0.99, total_reward / step_count)), 4) if step_count > 0 else 0.01,
-        "total_reward": round(max(0.01, min(0.99, total_reward / step_count)), 4) if step_count > 0 else 0.01,
+        "score": round(max(0.01, min(0.99, total_reward)), 4) if step_count > 0 else 0.01,
+        "total_reward": round(max(0.01, min(0.99, total_reward)), 4) if step_count > 0 else 0.01,
         "steps": step_count,
         "average_reward": round(max(0.01, min(0.99, total_reward / step_count)), 4) if step_count > 0 else 0.01,
         "step_results": step_results,

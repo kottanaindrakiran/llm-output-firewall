@@ -185,9 +185,14 @@ class LLMFirewallEnvironment:
                 self._step_number, self._active_task_id, reward, task_done,
             )
 
+            # Step-Normalization: Ensure the SUM of rewards across all steps remains (0, 1)
+            # Default to 20 steps if not specified to avoid division by zero
+            max_steps = getattr(self._current_task, "max_steps", 20)
+            normalized_reward = reward / max_steps
+            
             return StepResult(
                 observation=next_obs,
-                reward=max(0.01, min(0.99, reward)),
+                reward=max(0.001, min(0.99, normalized_reward)),
                 done=task_done,
                 info=info,
             )
