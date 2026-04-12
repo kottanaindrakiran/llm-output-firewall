@@ -5,7 +5,7 @@ This module defines all shared data models used across the environment,
 including Action, Observation, StepResult, and StateModel.
 """
 
-from typing import Literal, Optional
+from typing import Literal, Optional, Any
 from pydantic import BaseModel, Field, model_validator
 
 
