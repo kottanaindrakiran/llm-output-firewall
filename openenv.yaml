@@ -1,5 +1,5 @@
 name: llm-output-firewall
-version: "1.0.0"
+version: "0.9.0"
 description: "An OpenEnv-compliant RL environment for detecting toxic, hallucinated, biased, and adversarial LLM outputs"
 framework: fastapi
 port: 7860

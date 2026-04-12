@@ -74,7 +74,7 @@ app = FastAPI(
         "learns to detect and filter toxic, hallucinated, biased, and adversarial "
         "outputs from LLM responses in real-time."
     ),
-    version="1.0.0",
+    version="0.9.0",
     lifespan=lifespan,
 )
 
@@ -126,7 +126,7 @@ class ResetRequest(BaseModel):
 def root():
     return {
         "name": "LLM Output Firewall",
-        "version": "1.0.0",
+        "version": "0.9.0",
         "description": "An OpenEnv-compliant RL environment for detecting toxic, hallucinated, biased, and adversarial LLM outputs.",
         "status": "running",
         "tasks": 3,
