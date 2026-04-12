@@ -13,20 +13,23 @@ import time
 from contextlib import asynccontextmanager
 from typing import Any, Optional
 
-def sanitize_scores(data: Any) -> Any:
-    """Recursively clamp all floats and ints that look like scores to (0.01, 0.99)."""
+def sanitize_scores(data: Any, key: str = "") -> Any:
+    """Recursively clamp scores to (0.01, 0.99) while protecting IDs."""
+    protected_keys = {"task_id", "step", "steps", "index", "count", "id"}
+    
     if isinstance(data, dict):
-        return {k: sanitize_scores(v) for k, v in data.items()}
+        return {k: sanitize_scores(v, k) for k, v in data.items()}
     if isinstance(data, list):
-        return [sanitize_scores(x) for x in data]
-    # For floats, clamp strictly to (0.01, 0.99)
-    if isinstance(data, float):
-        return max(0.01, min(0.99, data))
-    # For integers 0 and 1, convert to safe float equivalents
-    if isinstance(data, int) and data == 1 and not isinstance(data, bool):
-        return 0.99
-    if isinstance(data, int) and data == 0 and not isinstance(data, bool):
-        return 0.01
+        return [sanitize_scores(x, key) for x in data]
+    
+    # Only sanitize if NOT a protected ID key
+    if key.lower() not in protected_keys:
+        if isinstance(data, float):
+            return max(0.01, min(0.99, data))
+        if isinstance(data, int) and data == 1 and not isinstance(data, bool):
+            return 0.99
+        if isinstance(data, int) and data == 0 and not isinstance(data, bool):
+            return 0.01
     return data
 
 from dotenv import load_dotenv
