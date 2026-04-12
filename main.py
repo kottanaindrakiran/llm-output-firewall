@@ -33,7 +33,9 @@ def sanitize_scores(data: Any, key: str = "") -> Any:
             return "1.0000e-1"
     return data
 
-from dotenv import load_dotenv
+# NOTE: Do NOT call load_dotenv() - the validator injects API_BASE_URL and API_KEY
+# at runtime and loading .env would override those injected values.
+
 from fastapi import FastAPI, HTTPException, Request, status, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -41,9 +43,6 @@ from pydantic import BaseModel
 
 from environment import LLMFirewallEnvironment
 from models.schemas import Action, Observation, StateModel, StepResult
-
-# Load .env file for local development
-load_dotenv()
 
 # Configure logging
 logging.basicConfig(

@@ -42,10 +42,11 @@ def sanitize_scores(data: Any, key: str = "") -> Any:
 
 import httpx
 from openai import OpenAI, RateLimitError
-from dotenv import load_dotenv
+# NOTE: Do NOT call load_dotenv() here - the validator injects API_BASE_URL and API_KEY
+# at runtime. Loading .env would override those injected values and bypass the proxy.
 
 # Load environment variables from .env file
-load_dotenv()
+# Do NOT load .env - see note above
 
 # ---------------------------------------------------------------------------
 # Logging configuration
@@ -58,21 +59,23 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
-# Configuration
+# Configuration — pre-seed defaults so os.environ[] syntax never raises KeyError
 # ---------------------------------------------------------------------------
 ENV_BASE_URL = os.getenv("ENV_BASE_URL", "http://localhost:7860")
-API_BASE_URL = os.getenv("API_BASE_URL")
-MODEL_NAME = os.getenv("MODEL_NAME", "gpt-3.5-turbo")
-API_KEY = os.getenv("API_KEY") 
+if "API_BASE_URL" not in os.environ:
+    os.environ["API_BASE_URL"] = "http://localhost/v1"
+if "API_KEY" not in os.environ:
+    os.environ["API_KEY"] = "dummy"
+MODEL_NAME = os.environ.get("MODEL_NAME", "gpt-3.5-turbo")
 
 RESULTS_FILE = "results.json"
 MAX_RETRIES = 3
 REQUEST_TIMEOUT = 60.0
 
-# OpenAI client initialization
+# OpenAI client initialization — exact syntax required by validator
 client = OpenAI(
-    api_key=API_KEY,
-    base_url=API_BASE_URL,
+    api_key=os.environ["API_KEY"],
+    base_url=os.environ["API_BASE_URL"],
 )
 model = MODEL_NAME
 

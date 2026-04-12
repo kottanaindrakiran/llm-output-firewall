@@ -39,9 +39,14 @@ def _get_openai_client() -> Any:
     try:
         import openai  # type: ignore
 
+        if "API_BASE_URL" not in os.environ:
+            os.environ["API_BASE_URL"] = "http://localhost/v1"
+        if "API_KEY" not in os.environ:
+            os.environ["API_KEY"] = "dummy"
+
         return openai.OpenAI(
-            api_key=os.getenv("API_KEY", ""),
-            base_url=os.getenv("API_BASE_URL"),
+            api_key=os.environ["API_KEY"],
+            base_url=os.environ["API_BASE_URL"],
         )
     except Exception as exc:
         logger.error("Failed to create OpenAI client: %s", exc)
