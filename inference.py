@@ -59,14 +59,12 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
-# Configuration — pre-seed defaults so os.environ[] syntax never raises KeyError
+# Configuration — synced exactly with pre-submission checklist
 # ---------------------------------------------------------------------------
 ENV_BASE_URL = os.getenv("ENV_BASE_URL", "http://localhost:7860")
-if "API_BASE_URL" not in os.environ:
-    os.environ["API_BASE_URL"] = "http://localhost/v1"
-if "API_KEY" not in os.environ:
-    os.environ["API_KEY"] = "dummy"
-MODEL_NAME = os.environ.get("MODEL_NAME", "llama-3.3-70b-versatile")
+API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost/v1")
+MODEL_NAME = os.getenv("MODEL_NAME", "llama-3.3-70b-versatile")
+API_KEY = os.getenv("API_KEY") 
 
 RESULTS_FILE = "results.json"
 MAX_RETRIES = 3
@@ -74,8 +72,8 @@ REQUEST_TIMEOUT = 60.0
 
 # OpenAI client initialization — exact syntax required by validator
 client = OpenAI(
-    api_key=os.environ["API_KEY"],
-    base_url=os.environ["API_BASE_URL"],
+    api_key=API_KEY,
+    base_url=API_BASE_URL,
 )
 model = MODEL_NAME
 
@@ -473,7 +471,7 @@ def main() -> None:
     4. Save results to results.json.
     """
     logger.info("LLM Output Firewall — Inference Script")
-    logger.info("Model: %s | API: %s | Ver: 0.9.0", MODEL_NAME, os.environ["API_BASE_URL"])
+    logger.info("Model: %s | API: %s | Ver: 0.9.0", MODEL_NAME, API_BASE_URL)
 
     # Step 1: Health check
     if not health_check():
