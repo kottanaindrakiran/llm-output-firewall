@@ -473,7 +473,7 @@ def main() -> None:
     4. Save results to results.json.
     """
     logger.info("LLM Output Firewall — Inference Script")
-    logger.info("Model: %s | API: %s | Ver: 0.9.0", MODEL_NAME, API_BASE_URL)
+    logger.info("Model: %s | API: %s | Ver: 0.9.0", MODEL_NAME, os.environ["API_BASE_URL"])
 
     # Step 1: Health check
     if not health_check():
