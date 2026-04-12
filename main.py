@@ -13,6 +13,22 @@ import time
 from contextlib import asynccontextmanager
 from typing import Any, Optional
 
+def sanitize_scores(data: Any) -> Any:
+    """Recursively clamp all floats and ints that look like scores to (0.01, 0.99)."""
+    if isinstance(data, dict):
+        return {k: sanitize_scores(v) for k, v in data.items()}
+    if isinstance(data, list):
+        return [sanitize_scores(x) for x in data]
+    # For floats, clamp strictly to (0.01, 0.99)
+    if isinstance(data, float):
+        return max(0.01, min(0.99, data))
+    # For integers 0 and 1, convert to safe float equivalents
+    if isinstance(data, int) and data == 1 and not isinstance(data, bool):
+        return 0.99
+    if isinstance(data, int) and data == 0 and not isinstance(data, bool):
+        return 0.01
+    return data
+
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request, status, Body
 from fastapi.middleware.cors import CORSMiddleware
@@ -143,7 +159,7 @@ async def reset(request: Optional[ResetRequest] = Body(None)):
     try:
         task_id = request.task_id if request else None
         observation = _env.reset(task_id=task_id)
-        return observation
+        return sanitize_scores(observation)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -172,7 +188,7 @@ async def step(action: Action) -> StepResult:
     """
     try:
         result = _env.step(action)
-        return result
+        return sanitize_scores(result)
     except RuntimeError as exc:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -200,7 +216,7 @@ async def state() -> StateModel:
         StateModel with current_task, step_number, total_score,
         false_positive_rate, and false_negative_rate.
     """
-    return _env.state()
+    return sanitize_scores(_env.state())
 
 
 @app.get(
@@ -215,7 +231,7 @@ async def get_tasks() -> list[dict[str, Any]]:
     Returns:
         List of task metadata dicts.
     """
-    return _env.get_tasks()
+    return sanitize_scores(_env.get_tasks())
 
 
 # ---------------------------------------------------------------------------
